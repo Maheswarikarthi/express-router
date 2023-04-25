@@ -1,40 +1,47 @@
-const express =require('express')
-const router=express.Router()
+const express = require('express')
+const router = express.Router()
+const arrayOfLength = 5
+router.get('/', (request, response) => {
+    response.send(`the page`)
+})
+router.route('/:id')
+    .get((request, response) => {
+        const userId = Number(request.params.id)
+        if (userId < arrayOfLength) {
+            response.send(` ${request.service.name}`)
+        }
+        else{
+            response.send('Invalid NUmber!')
+        }
+    })
+// .put((request,response)=>{
+//     response.send(`GET method on  user page with id ${request.params.id}`)
 
-let listofservices=[
+// })
+// .delete((request,response)=>{
+//     response.send(`GET method on  user page with id ${request.params.id}`)
+// })
+
+const users = [
     {
-        "id":1,
-        "Name":"webdevelopment"
-
+        name: 'web application'
     },
     {
-        "id":1,
-        "Name":"digital"
-
+        name: 'machine learning'
     },
     {
-        "id":3,
-        "Name":"bigdata"
-
-    
-    }
-
+        name: 'mobile app development'
+    },
+    {
+        name: 'data science'
+    },
+    {
+        name: 'bigdata'
+    },
 ]
-router.get('/',(request,response)=>{
-    response.send("hloo")
+
+router.param('id', (request, response, next, id) => {
+    request.service = users[id]
+    next()
 })
-router.get('/:id',(request,response)=>{
-    const routerId=Number(request.params.id)
-    const getRouter=listofservices.find((router)=>router.id===routerId)
-    if(!getRouter)
-    {
-        response.status(500).send("Expected service not found")
-        console.log(request.params.id);
-    }
-    else
-    {
-        response.json(getRouter)
-    }
-    
-})
-module.exports=router
+module.exports = router
